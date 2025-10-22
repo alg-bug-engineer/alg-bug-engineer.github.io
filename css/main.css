@@ -9,6 +9,7 @@ header {
     clear: both;
     z-index: 1000;
     transition: all 0.3s ease;
+    border-bottom: 1px solid #eee;
 }
 
 p.bio{
@@ -20,10 +21,12 @@ body {
     margin: auto;
     padding: 0;
     background-color: #f9f9f9;
-    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 
+                 "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", 
+                 "Microsoft YaHei", sans-serif;
+    line-height: 1.65; /* 增加行高，阅读段落文字更舒适 */
+    color: #333; /* 避免纯黑(#000)，#333 稍柔和 */
     font-size: 16px;
-    color: #333;
-    line-height: 1.5;
 }
 
 a img {
@@ -180,25 +183,8 @@ div.paper_materials{
     text-align: center;
 }
 
-.tab-button {
-    background-color: #f1f1f1;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 10px 20px;
-    margin-right: 5px;
-    border-radius: 4px;
-    transition: 0.3s;
-    font-size: 15px;
-}
-
 .tab-button:hover {
     background-color: #ddd;
-}
-
-.tab-button.active {
-    background-color: #4c81c9;
-    color: white;
 }
 
 /* News 板块样式 */
@@ -206,15 +192,6 @@ div.paper_materials{
     margin-bottom: 30px;
     max-height: 150px; /* 减小高度，只显示约5个新闻项 */
     overflow-y: auto; /* 超出部分显示滚动条 */
-}
-
-.news-item {
-    padding: 4px 15px; /* 减小上下内边距 */
-    margin-bottom: 2px; /* 减小底部间距 */
-    border-left: 3px solid #4c81c9;
-    background-color: transparent;
-    transition: all 0.3s ease;
-    line-height: 1.3; /* 减小行高 */
 }
 
 .news-item:hover {
@@ -249,13 +226,106 @@ div.tab-name, div.tab-link {
     margin-right: 20px;
 }
 
+.tab {
+    display: flex;
+    justify-content: space-between; /* 关键：两侧对齐 */
+    align-items: center;
+    max-width: 960px; /* 同内容区宽度 */
+    margin: 0 auto;
+    height: 60px; /* 给导航栏一个固定高度 */
+}
+.tab-name a {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #000;
+    text-decoration: none;
+}
+.news-item, .award-item {
+    display: flex;
+    margin-bottom: 12px;
+}
+.paper_materials .link a {
+    text-decoration: none;
+    background-color: #f4f4f4; /* 浅灰色背景 */
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-right: 5px;
+    font-size: 0.9em;
+    color: #333;
+    border: 1px solid #ddd;
+}
+.tab-button {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 8px 14px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+.tab-button.active { /* 你 JS 脚本中添加的 .active 类 */
+    background-color: #333; /* 深色背景 */
+    color: white;
+    border-color: #333;
+}
+.paper_materials .link a:hover {
+    background-color: #e9e9e9;
+}
+.paper_title {
+    font-size: 1.1rem;
+    font-weight: 600; /* 标题用稍粗的字重 */
+    color: #003366;  /* 标题用深蓝色，更醒目 */
+    margin-bottom: 5px;
+}
+.author {
+    margin-bottom: 5px;
+}
+.paper_venue {
+    font-style: italic; /* 期刊/会议使用斜体，这是学术惯例 */
+    color: #555;
+    font-weight: normal; /* 取消粗体 */
+    margin-bottom: 8px;
+}
+.news-date, .award-date {
+    flex-shrink: 0; /* 防止日期被压缩 */
+    width: 100px;   /* 固定宽度，例如 100px 或 7em */
+    font-weight: bold;
+    color: #000;
+}
+.news-content, .award-content {
+    color: #444;
+}
+.social-item {
+    display: flex;
+    align-items: center; /* 垂直居中对齐图标和文字 */
+    margin-bottom: 8px;
+}
+.social-icon {
+    margin-right: 8px; /* 图标和文字间的距离 */
+}
+.social-text {
+    text-decoration: none;
+    color: #333;
+}
+.tab-link-group .tab-link {
+    display: inline-block; /* 水平排列 */
+    margin-left: 20px;
+}
+.profile-bio p {
+    margin-bottom: 1em; /* 1em 等于当前字体大小 */
+}
+.tab-link a {
+    text-decoration: none;
+    color: #555;
+    font-weight: 500;
+}
+
 div.tab-link a {
+    text-decoration: none;
     padding: 8px 15px; /* 增大内边距 */
     border-radius: 6px; /* 增大圆角 */
     transition: all 0.3s ease;
     font-size: 20px; /* 增大字体 */
-    font-weight: 600; /* 加粗字体 */
-    color: #333; /* 加深颜色 */
+    font-weight: 500; /* 加粗字体 */
+    color: #555; /* 加深颜色 */
     text-decoration: none;
 }
 
@@ -284,10 +354,16 @@ h3{
 }
 
 /* 个人信息区域新布局 */
-.profile-section {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 80px 0 20px 0; /* 增加顶部内边距，为固定导航栏留出空间 */
+.content, .profile-section {
+    max-width: 960px; /* 或 900px，一个舒适的阅读宽度 */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0 20px; /* 保证在窄屏上也有边距 */
+}
+
+.content {
+    margin-top: 40px;
+    margin-bottom: 40px;
 }
 
 /* 社交链接带文字样式 */
