@@ -1,7 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, Circle, Edit, Archive, Trash2, Calendar, AlertCircle } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { CheckCircle2, Circle, Edit, Archive, Trash2, Calendar, AlertCircle, AlertTriangle } from 'lucide-react';
 import { format, isPast, isToday } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
 import type { Item } from '@/types/types';
@@ -40,6 +41,7 @@ export default function ItemCard({ item, onUpdate }: ItemCardProps) {
 
   const isCompleted = item.status === 'completed';
   const isOverdue = item.due_date && isPast(new Date(item.due_date)) && !isCompleted;
+  const hasConflict = item.has_conflict && item.type === 'event';
 
   const handleToggleComplete = async () => {
     const newStatus = isCompleted ? 'pending' : 'completed';
@@ -77,9 +79,14 @@ export default function ItemCard({ item, onUpdate }: ItemCardProps) {
     }
   };
 
+  // 确定边框颜色: 冲突优先级最高
+  const borderClass = hasConflict 
+    ? 'border-l-4 border-l-red-500' 
+    : (priorityColors[item.priority as keyof typeof priorityColors] || '');
+
   return (
     <>
-      <Card className={`${priorityColors[item.priority as keyof typeof priorityColors] || ''} ${isCompleted ? 'opacity-60' : ''}`}>
+      <Card className={`${borderClass} ${isCompleted ? 'opacity-60' : ''}`}>
         <CardHeader className="pb-3">
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-start gap-2 flex-1">
@@ -98,9 +105,23 @@ export default function ItemCard({ item, onUpdate }: ItemCardProps) {
                 </Button>
               )}
               <div className="flex-1">
-                <CardTitle className={`text-lg ${isCompleted ? 'line-through' : ''}`}>
-                  {item.title || '无标题'}
-                </CardTitle>
+                <div className="flex items-center gap-2">
+                  <CardTitle className={`text-lg ${isCompleted ? 'line-through' : ''}`}>
+                    {item.title || '无标题'}
+                  </CardTitle>
+                  {hasConflict && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <AlertTriangle className="h-5 w-5 text-red-500 flex-shrink-0" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>⚠️ 此日程存在时间冲突</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </div>
                 <div className="flex items-center gap-2 mt-1">
                   <Badge className={typeColors[item.type]}>
                     {typeLabels[item.type]}
@@ -113,6 +134,14 @@ export default function ItemCard({ item, onUpdate }: ItemCardProps) {
                         {isToday(new Date(item.due_date))
                           ? '今天'
                           : format(new Date(item.due_date), 'MM月dd日 HH:mm', { locale: zhCN })}
+                      </span>
+                    </div>
+                  )}
+                  {item.start_time && item.end_time && (
+                    <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
+                      <Calendar className="h-4 w-4" />
+                      <span>
+                        {format(new Date(item.start_time), 'HH:mm')} - {format(new Date(item.end_time), 'HH:mm')}
                       </span>
                     </div>
                   )}

@@ -474,5 +474,63 @@ export const itemApi = {
     });
 
     return items;
+  },
+
+  async queryItems(intent: any): Promise<Item[]> {
+    console.log('🔍 智能查询:', intent);
+
+    let query = supabase
+      .from('items')
+      .select('*')
+      .is('archived_at', null);
+
+    // 按类型筛选
+    if (intent.itemType) {
+      query = query.eq('type', intent.itemType);
+    }
+
+    // 按时间范围筛选
+    if (intent.timeRange) {
+      if (intent.queryType === 'today' || intent.queryType === 'upcoming') {
+        // 查询due_date在范围内的
+        query = query
+          .gte('due_date', intent.timeRange.start)
+          .lte('due_date', intent.timeRange.end);
+      } else {
+        // 查询created_at在范围内的
+        query = query
+          .gte('created_at', intent.timeRange.start)
+          .lte('created_at', intent.timeRange.end);
+      }
+    }
+
+    // 按标签筛选
+    if (intent.tags && intent.tags.length > 0) {
+      query = query.overlaps('tags', intent.tags);
+    }
+
+    // 按关键词搜索
+    if (intent.keywords && intent.keywords.length > 0) {
+      const keyword = intent.keywords[0];
+      query = query.or(
+        `title.ilike.%${keyword}%,description.ilike.%${keyword}%,raw_text.ilike.%${keyword}%,url_summary.ilike.%${keyword}%`
+      );
+    }
+
+    const { data, error } = await query.order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('智能查询失败:', error);
+      return [];
+    }
+
+    const items = Array.isArray(data) ? data : [];
+
+    console.log('🔍 查询结果:', {
+      total: items.length,
+      intent: intent.queryType
+    });
+
+    return items;
   }
 };

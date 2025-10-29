@@ -30,6 +30,13 @@ export interface Item {
   url_summary: string | null;
   url_thumbnail: string | null;
   url_fetched_at: string | null;
+  has_conflict: boolean;
+  start_time: string | null;
+  end_time: string | null;
+  recurrence_rule: string | null;
+  recurrence_end_date: string | null;
+  master_item_id: string | null;
+  is_master: boolean;
 }
 
 export interface AIProcessResult {
@@ -44,6 +51,8 @@ export interface AIProcessResult {
   url_title?: string;
   url_summary?: string;
   url_thumbnail?: string;
+  start_time?: string | null;
+  end_time?: string | null;
 }
 
 export interface TagStats {
@@ -58,4 +67,22 @@ export interface URLFetchResult {
   summary: string;
   thumbnail?: string;
   content: string;
+}
+
+export interface QueryIntent {
+  isQuery: boolean;
+  queryType?: 'today' | 'upcoming' | 'week' | 'month' | 'type' | 'tag' | 'general';
+  timeRange?: {
+    start: string;
+    end: string;
+  };
+  itemType?: ItemType;
+  tags?: string[];
+  keywords?: string[];
+}
+
+export interface QueryResult {
+  items: Item[];
+  summary: string;
+  count: number;
 }

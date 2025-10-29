@@ -357,6 +357,7 @@ export default function Dashboard() {
         onProcessingStart={handleProcessingStart}
         onProcessingComplete={handleProcessingComplete}
         onProcessingError={handleProcessingError}
+        onDeleteURL={handleDeleteURL}
       />
     </div>
   );
