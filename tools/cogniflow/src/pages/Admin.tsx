@@ -7,7 +7,6 @@ import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 import { profileApi } from '@/db/api';
-import { supabase } from '@/db/supabase';
 import type { Profile, UserRole } from '@/types/types';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';

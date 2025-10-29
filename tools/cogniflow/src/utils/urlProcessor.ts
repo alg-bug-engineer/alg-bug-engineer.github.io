@@ -24,47 +24,56 @@ export function isMainlyURL(text: string): boolean {
 }
 
 /**
- * 调用Edge Function抓取URL内容
+ * 抓取URL内容 (简化版本，不依赖Supabase Edge Function)
+ * 由于浏览器CORS限制，只能提取URL基本信息
  */
 export async function fetchURLContent(url: string): Promise<URLFetchResult> {
-  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-  const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+  console.log('🌐 处理URL:', url);
   
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Supabase配置缺失');
+  try {
+    // 从URL提取基本信息
+    const urlObj = new URL(url);
+    const hostname = urlObj.hostname;
+    const pathname = urlObj.pathname;
+    
+    // 生成标题（从URL路径提取）
+    let title = hostname;
+    if (pathname && pathname !== '/') {
+      const pathParts = pathname.split('/').filter(Boolean);
+      if (pathParts.length > 0) {
+        title = pathParts[pathParts.length - 1]
+          .replace(/[-_]/g, ' ')
+          .replace(/\.[^.]+$/, '') // 移除文件扩展名
+          .replace(/\b\w/g, l => l.toUpperCase()); // 首字母大写
+      }
+    }
+    
+    // 如果标题太短或不友好，使用完整域名
+    if (title.length < 3) {
+      title = hostname;
+    }
+    
+    const result: URLFetchResult = {
+      url: url,
+      title: title || '网页链接',
+      summary: `来自 ${hostname} 的链接`,
+      thumbnail: `https://www.google.com/s2/favicons?domain=${hostname}&sz=128`,
+      content: ''
+    };
+    
+    console.log('✅ URL信息提取成功:', result.title);
+    
+    return result;
+  } catch (error) {
+    console.error('URL处理失败:', error);
+    
+    // 返回最基本的信息
+    return {
+      url: url,
+      title: '网页链接',
+      summary: '无法提取链接信息',
+      thumbnail: undefined,
+      content: ''
+    };
   }
-  
-  const functionUrl = `${supabaseUrl}/functions/v1/fetch-url-content`;
-  
-  console.log('🌐 正在抓取URL:', url);
-  
-  const response = await fetch(functionUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${supabaseAnonKey}`
-    },
-    body: JSON.stringify({ url })
-  });
-  
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`抓取URL失败: ${error}`);
-  }
-  
-  const result = await response.json();
-  
-  if (!result.success) {
-    throw new Error(result.error || '抓取URL失败');
-  }
-  
-  console.log('✅ URL抓取成功:', result.title);
-  
-  return {
-    url: result.url,
-    title: result.title,
-    summary: result.summary,
-    thumbnail: result.thumbnail,
-    content: result.content
-  };
 }

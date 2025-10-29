@@ -6,8 +6,7 @@ import { toast } from 'sonner';
 import { processTextWithAI } from '@/utils/ai';
 import { detectURL, isMainlyURL, fetchURLContent } from '@/utils/urlProcessor';
 import { detectQueryIntent, removeQueryPrefix, parseQueryIntent, generateQuerySummary } from '@/utils/queryProcessor';
-import { itemApi } from '@/db/api';
-import { supabase } from '@/db/supabase';
+import { itemApi, localAuth } from '@/db/api';
 import { QueryResultPanel } from '@/components/query/QueryResultPanel';
 import type { Item } from '@/types/types';
 
@@ -95,9 +94,9 @@ export default function QuickInput({
 
     // 异步处理,不阻塞UI
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const user = localAuth.getCurrentUser();
       if (!user) {
-        toast.error('请先登录');
+        toast.error('用户未初始化');
         onProcessingError?.(processingId);
         return;
       }

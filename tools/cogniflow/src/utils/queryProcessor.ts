@@ -4,25 +4,14 @@ import { startOfDay, endOfDay, addDays, startOfWeek, endOfWeek, startOfMonth, en
 
 /**
  * 检测输入是否为查询意图
- * 支持特殊前缀: ? 或 /q
+ * 只支持特殊前缀: ? 或 /q
+ * 其他所有输入都视为普通记录
  */
 export function detectQueryIntent(text: string): boolean {
   const trimmed = text.trim();
   
-  // 检查特殊前缀
-  if (trimmed.startsWith('?') || trimmed.startsWith('/q')) {
-    return true;
-  }
-  
-  // 检查常见查询关键词
-  const queryKeywords = [
-    '查询', '查看', '搜索', '找', '有什么', '什么事', 
-    '今天', '明天', '本周', '下周', '这个月',
-    '会议', '任务', '日程', '笔记',
-    '显示', '列出', '告诉我'
-  ];
-  
-  return queryKeywords.some(keyword => trimmed.includes(keyword));
+  // 只检查特殊前缀
+  return trimmed.startsWith('?') || trimmed.startsWith('/q');
 }
 
 /**
@@ -43,8 +32,6 @@ export function removeQueryPrefix(text: string): string {
  * 使用AI解析查询意图
  */
 export async function parseQueryIntent(text: string): Promise<QueryIntent> {
-  const APP_ID = import.meta.env.VITE_APP_ID;
-  
   return new Promise((resolve, reject) => {
     let fullResponse = '';
     
@@ -87,8 +74,6 @@ export async function parseQueryIntent(text: string): Promise<QueryIntent> {
 }`;
 
     sendChatStream({
-      endpoint: '/api/miaoda/runtime/apicenter/source/proxy/ernietextgenerationchat',
-      apiId: APP_ID,
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: text }

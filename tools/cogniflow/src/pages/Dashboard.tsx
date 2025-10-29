@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Search, Calendar, Inbox, Tag, CalendarDays, Link as LinkIcon, History } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Search, Inbox, Tag, CalendarDays, Link as LinkIcon, History, Archive, Calendar, Filter, X } from 'lucide-react';
 import QuickInput from '@/components/items/QuickInput';
 import ItemCard from '@/components/items/ItemCard';
 import ProcessingCard from '@/components/items/ProcessingCard';
 import TagCard from '@/components/tags/TagCard';
 import { URLCard } from '@/components/url/URLCard';
-import { itemApi } from '@/db/api';
+import CalendarView from '@/components/calendar/CalendarView';
+import { itemApi } from '@/db/localApi';
 import type { Item, TagStats } from '@/types/types';
 import { format } from 'date-fns';
 import { zhCN } from 'date-fns/locale';
@@ -20,14 +21,16 @@ interface ProcessingItem {
 }
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState('today');
-  const [topicsSubTab, setTopicsSubTab] = useState('tags'); // 'tags' | 'history'
-  const [todayItems, setTodayItems] = useState<Item[]>([]);
+  const [activeTab, setActiveTab] = useState('upcoming');
+  const [topicsSubTab, setTopicsSubTab] = useState('tags'); // 'tags' | 'history' | 'calendar'
   const [upcomingItems, setUpcomingItems] = useState<Item[]>([]);
   const [inboxItems, setInboxItems] = useState<Item[]>([]);
   const [urlItems, setUrlItems] = useState<Item[]>([]);
+  const [archivedItems, setArchivedItems] = useState<Item[]>([]);
   const [tagStats, setTagStats] = useState<TagStats[]>([]);
   const [historyItems, setHistoryItems] = useState<Item[]>([]);
+  const [filteredHistoryItems, setFilteredHistoryItems] = useState<Item[]>([]);
+  const [historyDateRange, setHistoryDateRange] = useState<{ start: string; end: string } | null>(null);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [tagItems, setTagItems] = useState<Item[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -36,19 +39,19 @@ export default function Dashboard() {
   const [processingItems, setProcessingItems] = useState<ProcessingItem[]>([]);
 
   const loadData = async () => {
-    const [today, upcoming, inbox, urls, tags, history] = await Promise.all([
-      itemApi.getTodayItems(),
+    const [upcoming, inbox, urls, archived, tags, history] = await Promise.all([
       itemApi.getUpcomingItems(),
       itemApi.getInboxItems(),
       itemApi.getURLItems(),
+      itemApi.getArchivedItems(),
       itemApi.getTagStats(),
       itemApi.getAllItemsHistory()
     ]);
 
-    setTodayItems(today);
     setUpcomingItems(upcoming);
     setInboxItems(inbox);
     setUrlItems(urls);
+    setArchivedItems(archived);
     setTagStats(tags);
     setHistoryItems(history);
   };
@@ -61,7 +64,9 @@ export default function Dashboard() {
     const searchItems = async () => {
       if (searchQuery.trim()) {
         setIsSearching(true);
-        const results = await itemApi.searchItems(searchQuery);
+        // 将搜索关键词转换为数组
+        const keywords = searchQuery.trim().split(/\s+/);
+        const results = await itemApi.searchItems(keywords);
         setSearchResults(results);
       } else {
         setIsSearching(false);
@@ -148,10 +153,6 @@ export default function Dashboard() {
         ) : (
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid w-full grid-cols-5 mb-6">
-              <TabsTrigger value="today" className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                今日
-              </TabsTrigger>
               <TabsTrigger value="upcoming" className="flex items-center gap-2">
                 <CalendarDays className="h-4 w-4" />
                 即将发生
@@ -164,30 +165,21 @@ export default function Dashboard() {
                 <LinkIcon className="h-4 w-4" />
                 链接库
               </TabsTrigger>
+              <TabsTrigger value="archived" className="flex items-center gap-2">
+                <Archive className="h-4 w-4" />
+                归档
+              </TabsTrigger>
               <TabsTrigger value="topics" className="flex items-center gap-2">
                 <Tag className="h-4 w-4" />
                 主题
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="today" className="space-y-3">
+            <TabsContent value="upcoming" className="space-y-3">
               {processingItems.map((item) => (
                 <ProcessingCard key={item.id} text={item.text} />
               ))}
-              {todayItems.length === 0 && processingItems.length === 0 ? (
-                <div className="text-center py-12">
-                  <Calendar className="h-16 w-16 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
-                  <p className="text-gray-500 dark:text-gray-400">今天暂无任务或日程</p>
-                </div>
-              ) : (
-                todayItems.map((item) => (
-                  <ItemCard key={item.id} item={item} onUpdate={loadData} />
-                ))
-              )}
-            </TabsContent>
-
-            <TabsContent value="upcoming" className="space-y-3">
-              {upcomingItems.length === 0 ? (
+              {upcomingItems.length === 0 && processingItems.length === 0 ? (
                 <div className="text-center py-12">
                   <CalendarDays className="h-16 w-16 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
                   <p className="text-gray-500 dark:text-gray-400">暂无即将发生的事项</p>
@@ -240,6 +232,38 @@ export default function Dashboard() {
               )}
             </TabsContent>
 
+            <TabsContent value="archived" className="space-y-3">
+              {archivedItems.length === 0 ? (
+                <div className="text-center py-12">
+                  <Archive className="h-16 w-16 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
+                  <p className="text-gray-500 dark:text-gray-400">归档箱为空</p>
+                  <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">
+                    已归档的内容会出现在这里
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <div className="mb-4">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                      已归档的内容
+                    </h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      共 {archivedItems.length} 条记录，点击可恢复
+                    </p>
+                  </div>
+                  <div className="space-y-3">
+                    {archivedItems.map((item) => (
+                      item.type === 'url' ? (
+                        <URLCard key={item.id} item={item} onDelete={handleDeleteURL} />
+                      ) : (
+                        <ItemCard key={item.id} item={item} onUpdate={loadData} />
+                      )
+                    ))}
+                  </div>
+                </div>
+              )}
+            </TabsContent>
+
             <TabsContent value="topics">
               {selectedTag ? (
                 <div className="space-y-3">
@@ -273,7 +297,7 @@ export default function Dashboard() {
                 <div>
                   {/* 二级Tab导航 */}
                   <Tabs value={topicsSubTab} onValueChange={setTopicsSubTab} className="mb-4">
-                    <TabsList className="grid w-full grid-cols-2">
+                    <TabsList className="grid w-full grid-cols-3">
                       <TabsTrigger value="tags" className="flex items-center gap-2">
                         <Tag className="h-4 w-4" />
                         标签
@@ -281,6 +305,10 @@ export default function Dashboard() {
                       <TabsTrigger value="history" className="flex items-center gap-2">
                         <History className="h-4 w-4" />
                         历史记录
+                      </TabsTrigger>
+                      <TabsTrigger value="calendar" className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        日历
                       </TabsTrigger>
                     </TabsList>
 
@@ -325,15 +353,90 @@ export default function Dashboard() {
                       ) : (
                         <div>
                           <div className="mb-6">
-                            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                              全部历史记录
-                            </h3>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              共 {historyItems.length} 条记录,按时间倒序排列
-                            </p>
+                            <div className="flex items-center justify-between mb-4">
+                              <div>
+                                <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-1">
+                                  全部历史记录
+                                </h3>
+                                <p className="text-sm text-gray-600 dark:text-gray-400">
+                                  共 {filteredHistoryItems.length > 0 ? filteredHistoryItems.length : historyItems.length} 条记录,按时间倒序排列
+                                </p>
+                              </div>
+                              <div className="flex gap-2">
+                                <Popover>
+                                  <PopoverTrigger asChild>
+                                    <Button variant="outline" size="sm" className="gap-2">
+                                      <Filter className="h-4 w-4" />
+                                      {historyDateRange ? '已筛选' : '按日期筛选'}
+                                    </Button>
+                                  </PopoverTrigger>
+                                  <PopoverContent className="w-auto p-4" align="end">
+                                    <div className="space-y-3">
+                                      <div className="space-y-2">
+                                        <label className="text-sm font-medium">开始日期</label>
+                                        <Input
+                                          type="date"
+                                          value={historyDateRange?.start || ''}
+                                          onChange={(e) => {
+                                            const start = e.target.value;
+                                            setHistoryDateRange(prev => ({
+                                              start,
+                                              end: prev?.end || start
+                                            }));
+                                          }}
+                                        />
+                                      </div>
+                                      <div className="space-y-2">
+                                        <label className="text-sm font-medium">结束日期</label>
+                                        <Input
+                                          type="date"
+                                          value={historyDateRange?.end || ''}
+                                          onChange={(e) => {
+                                            const end = e.target.value;
+                                            setHistoryDateRange(prev => ({
+                                              start: prev?.start || end,
+                                              end
+                                            }));
+                                          }}
+                                        />
+                                      </div>
+                                      <Button
+                                        size="sm"
+                                        className="w-full"
+                                        onClick={async () => {
+                                          if (historyDateRange?.start && historyDateRange?.end) {
+                                            // @ts-ignore - 新方法 TypeScript 还未识别
+                                            const filtered = await itemApi.getHistoryByDateRange(
+                                              historyDateRange.start,
+                                              historyDateRange.end
+                                            );
+                                            setFilteredHistoryItems(filtered);
+                                          }
+                                        }}
+                                        disabled={!historyDateRange?.start || !historyDateRange?.end}
+                                      >
+                                        应用筛选
+                                      </Button>
+                                    </div>
+                                  </PopoverContent>
+                                </Popover>
+                                {historyDateRange && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => {
+                                      setHistoryDateRange(null);
+                                      setFilteredHistoryItems([]);
+                                    }}
+                                  >
+                                    <X className="h-4 w-4" />
+                                  </Button>
+                                )}
+                              </div>
+                            </div>
                           </div>
                           <div className="space-y-3">
-                            {historyItems.map((item) => (
+                            {(filteredHistoryItems.length > 0 ? filteredHistoryItems : historyItems).map((item) => (
                               item.type === 'url' ? (
                                 <URLCard key={item.id} item={item} onDelete={handleDeleteURL} />
                               ) : (
@@ -343,6 +446,10 @@ export default function Dashboard() {
                           </div>
                         </div>
                       )}
+                    </TabsContent>
+
+                    <TabsContent value="calendar" className="mt-6">
+                      <CalendarView onUpdate={loadData} />
                     </TabsContent>
                   </Tabs>
                 </div>

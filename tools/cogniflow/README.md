@@ -94,9 +94,59 @@ Vite、TypeScript、React、Supabase
 配置环境变量，安装相关依赖
 如需使用数据库，请使用 supabase 官方版本或自行部署开源版本的 Supabase
 
+### 🔧 配置 AI 功能（重要）
+
+本项目使用 **智谱AI (GLM)** 提供智能文本处理和查询解析功能。
+
+#### 1. 获取 GLM API Key
+1. 访问 [智谱AI开放平台](https://open.bigmodel.cn/)
+2. 注册/登录账号
+3. 进入控制台创建 API Key
+4. 复制生成的 API Key
+
+#### 2. 配置环境变量
+在项目根目录的 `.env` 文件中添加：
+
+```env
+# GLM API 配置（必需）
+VITE_GLM_API_KEY=your_api_key_here
+VITE_GLM_MODEL=glm-4-flash
+```
+
+**注意：**
+- ⚠️ 将 `your_api_key_here` 替换为你的真实 API Key
+- ⚠️ 不要将 `.env` 文件提交到代码仓库
+- ✅ 可以参考 `.env.example` 文件进行配置
+
+#### 3. 快速配置指南
+详细配置步骤请查看：
+- [GLM 快速配置指南](./GLM_QUICK_START.md)
+- [API 迁移文档](./GLM_API_MIGRATION.md)
+
 ### 如何配置应用中的三方 API？
 
 具体三方 API 调用方法，请参考帮助文档：[源码导出](https://cloud.baidu.com/doc/MIAODA/s/Xmewgmsq7)，了解更多详细内容。
+
+## 🚀 功能特性
+
+- ✨ **智能文本处理**：自动识别任务、日程、笔记、资料
+- 🔍 **智能查询**：自然语言查询你的待办事项
+- 📅 **时间管理**：自动提取和解析时间信息
+- 🏷️ **标签管理**：自动提取关键词标签
+- 🔗 **链接管理**：自动获取网页标题和摘要
+- 🌙 **深色模式**：支持明暗主题切换
+
+## 📋 最新更新
+
+### 2025-10-29
+- ✅ 从 Miaoda API 迁移到 GLM API
+- ✅ 优化 UI/UX，提高信息密度
+- ✅ 实现卡片悬浮操作按钮
+- ✅ 优化 URLCard 布局为图文左右结构
+
+详细更新日志请查看：
+- [UI/UX 优化总结](./UI_UX_OPTIMIZATION_SUMMARY.md)
+- [API 迁移总结](./API_MIGRATION_SUMMARY.md)
 
 ## 了解更多
 
