@@ -56,7 +56,7 @@ div.content {
     margin-right: auto;
     clear: both;
     overflow: auto;
-    border-radius: 8px;
+    /* border-radius: 8px; */ /* 移除圆角 */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     margin-bottom: 25px;
 }
@@ -83,16 +83,16 @@ img.publication-image {
     width: 160px;
     height: 100px;
     object-fit: cover;
-    border-radius: 5px;
+    /* border-radius: 5px; */ /* 移除圆角 */
     transition: transform 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin: 0 auto; /* 居中显示 */
     display: block; /* 块级元素 */
 }
 
-img.publication-image:hover {
-    transform: scale(1.05);
-}
+/* img.publication-image:hover { */ /* 移除悬浮效果 */
+    /* transform: scale(1.05); */
+/* } */
 
 td.image-column {
     width: 220px;
@@ -136,7 +136,7 @@ img.img_teaser {
 
 div.project_headline,div.project_video {
     text-align: center;
-/*    max-width: 100%;
+/* max-width: 100%;
     vertical-align: middle;
     margin-left: auto;
     margin-right: auto;*/
@@ -203,9 +203,9 @@ div.paper_materials{
     text-align: center;
 }
 
-.tab-button:hover {
-    background-color: #ddd;
-}
+/* .tab-button:hover { */ /* 移除悬浮效果 */
+    /* background-color: #ddd; */
+/* } */
 
 /* News 板块样式 */
 .news-container {
@@ -214,13 +214,13 @@ div.paper_materials{
     overflow-y: auto; /* 超出部分显示滚动条 */
 }
 
-.news-item:hover {
-    transform: translateX(5px);
-}
+/* .news-item:hover { */ /* 移除悬浮效果 */
+    /* transform: translateX(5px); */
+/* } */
 
 .news-date {
     font-weight: bold;
-    color: #4c81c9;
+    color: #2c3e50; /* 移除蓝色 */
     margin-right: 10px;
 }
 
@@ -297,8 +297,8 @@ div.tab-name, div.tab-link {
     margin-bottom: 15px;
     padding: 12px 15px;
     background-color: #fafbfc;
-    border-radius: 4px;
-    border-left: 4px solid #5890ff;
+    /* border-radius: 4px; */ /* 移除圆角 */
+    border-left: 4px solid #cccccc; /* 移除蓝色，改为灰色 */
 }
 
 .patent-title {
@@ -311,7 +311,7 @@ div.tab-name, div.tab-link {
     text-decoration: none;
     background-color: #f8f9fa;
     padding: 4px 10px;
-    border-radius: 3px;
+    /* border-radius: 3px; */ /* 移除圆角 */
     margin-right: 6px;
     font-size: 0.88em;
     color: #495057;
@@ -319,15 +319,16 @@ div.tab-name, div.tab-link {
     transition: all 0.2s ease;
 }
 
-.paper_materials .link a:hover {
-    background-color: #e9ecef;
-    border-color: #adb5bd;
-    color: #212529;
-}
+/* .paper_materials .link a:hover { */ /* 移除悬浮效果 */
+    /* background-color: #e9ecef; */
+    /* border-color: #adb5bd; */
+    /* color: #212529; */
+/* } */
+
 .paper_title {
     font-size: 1.1rem;
     font-weight: 600; /* 标题用稍粗的字重 */
-    color: #003366;  /* 标题用深蓝色，更醒目 */
+    color: #000000;  /* 移除蓝色，改为黑色 */
     margin-bottom: 5px;
 }
 .author {
@@ -378,7 +379,7 @@ div.tab-name, div.tab-link {
 div.tab-link a {
     text-decoration: none;
     padding: 8px 15px; /* 增大内边距 */
-    border-radius: 6px; /* 增大圆角 */
+    /* border-radius: 6px; */ /* 移除圆角 */
     transition: all 0.3s ease;
     font-size: 20px; /* 增大字体 */
     font-weight: 500; /* 加粗字体 */
@@ -386,11 +387,11 @@ div.tab-link a {
     text-decoration: none;
 }
 
-div.tab-link a:hover {
-    background-color: #4c81c9; /* 蓝色背景 */
-    color: white; /* 白色文字 */
-    text-decoration: none;
-}
+/* div.tab-link a:hover { */ /* 移除悬浮效果 */
+    /* background-color: #4c81c9; */ /* 移除蓝色 */
+    /* color: white; */
+    /* text-decoration: none; */
+/* } */
 
 div.tab-link {
     float: right;
@@ -442,7 +443,7 @@ h3{
    width: 20px;
    height: 20px;
    background-color: transparent;
-   border-radius: 50%;
+   /* border-radius: 50%; */ /* 移除圆角 */
    text-align: center;
    line-height: 20px;
    flex-shrink: 0;
@@ -467,10 +468,10 @@ h3{
    margin-top: 4px;
 }
 
-.social-text:hover {
-   color: #4c81c9;
-   transform: translateY(-1px);
-}
+/* .social-text:hover { */ /* 移除悬浮效果 */
+   /* color: #4c81c9; */
+   /* transform: translateY(-1px); */
+/* } */
 
 .profile-header {
     display: flex;
@@ -511,25 +512,27 @@ h3{
     padding-top: 10px;
 }
 
-/* 联系方式悬浮提示样式 */
+/* 移除联系方式悬浮提示样式 */
 .contact-link {
-    position: relative;
-    color: #5890ff;
+    /* position: relative; */
+    color: #333; /* 移除蓝色 */
     font-weight: 500;
-    cursor: pointer;
-    border-bottom: 1px dashed #5890ff;
-    padding-bottom: 1px;
+    cursor: default;
+    /* border-bottom: 1px dashed #5890ff; */ /* 移除蓝色 */
+    /* padding-bottom: 1px; */
 }
 
-.contact-link:hover {
-    color: #3d7ae8;
-    border-bottom-color: #3d7ae8;
-}
+/* .contact-link:hover { */ /* 移除悬浮效果 */
+    /* color: #3d7ae8; */
+    /* border-bottom-color: #3d7ae8; */
+/* } */
 
 .tooltip-content {
-    visibility: hidden;
+    visibility: hidden; /* 隐藏悬浮内容 */
     opacity: 0;
     position: absolute;
+    /* 移除所有悬浮样式 */
+    /*
     bottom: 125%;
     left: 50%;
     transform: translateX(-50%);
@@ -544,9 +547,11 @@ h3{
     font-weight: normal;
     font-size: 14px;
     border: 1px solid #e0e0e0;
+    */
 }
 
-.tooltip-content::after {
+/* .tooltip-content::after { */ /* 移除悬浮箭头 */
+    /*
     content: "";
     position: absolute;
     top: 100%;
@@ -555,22 +560,23 @@ h3{
     border-width: 6px;
     border-style: solid;
     border-color: #ffffff transparent transparent transparent;
-}
+    */
+/* } */
 
-.contact-link:hover .tooltip-content {
-    visibility: visible;
-    opacity: 1;
-}
+/* .contact-link:hover .tooltip-content { */ /* 移除悬浮效果 */
+    /* visibility: visible; */
+    /* opacity: 1; */
+/* } */
 
-/* 微信二维码特殊样式 */
-.wechat-tooltip .tooltip-content {
+/* 移除微信二维码特殊样式 */
+/* .wechat-tooltip .tooltip-content {
     padding: 10px;
     white-space: normal;
-}
+} */
 
-.wechat-tooltip .tooltip-content img {
+/* .wechat-tooltip .tooltip-content img {
     display: block;
     max-width: 200px;
     height: auto;
     border-radius: 4px;
-}
+} */
