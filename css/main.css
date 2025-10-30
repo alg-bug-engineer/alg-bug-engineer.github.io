@@ -4,7 +4,7 @@ header {
     margin-top: 0px;
     text-align: left;
     background-color: #ffffff;
-    position: fixed;
+    position: relative;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
     clear: both;
     z-index: 1000;
@@ -24,8 +24,8 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, 
                  "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", 
                  "Microsoft YaHei", sans-serif;
-    line-height: 1.65; /* 增加行高，阅读段落文字更舒适 */
-    color: #333; /* 避免纯黑(#000)，#333 稍柔和 */
+    line-height: 1.65;
+    color: #333;
     font-size: 16px;
 }
 
@@ -48,8 +48,7 @@ p.news{
 }
 
 div.content {
-    padding-left: 50px;
-    padding-right: 50px;
+    padding: 35px 50px;
     background-color: #ffffff;
     max-width: 1000px;
     vertical-align: middle;
@@ -58,13 +57,26 @@ div.content {
     clear: both;
     overflow: auto;
     border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    margin-bottom: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    margin-bottom: 25px;
+}
+
+div.content h3 {
+    color: #2c3e50;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    margin-top: 0;
 }
 
 .publication-table {
     width: 100%;
-    border-spacing: 0 20px;
+    border-spacing: 0 15px;
+    border-collapse: separate;
+}
+
+.publication-item {
+    border-bottom: 1px solid #f0f0f0;
 }
 
 img.publication-image {
@@ -84,18 +96,20 @@ img.publication-image:hover {
 
 td.image-column {
     width: 220px;
-    height: 120px; /* 增加高度以获得更好的间距 */
     padding-left: 30px;
-    vertical-align: middle; /* 垂直居中 */
-    text-align: center; /* 水平居中 */
+    vertical-align: top;
+    text-align: center;
+    padding-top: 8px;
+    padding-bottom: 15px;
 }
 
 td.description-column {
     width: 780px;
-    height: 120px; /* 与image-column保持一致 */
     text-align: left;
-    vertical-align: middle; /* 垂直居中 */
+    vertical-align: top;
     padding-left: 20px;
+    padding-top: 8px;
+    padding-bottom: 15px;
 }
 
 td.general-item-right {
@@ -152,10 +166,11 @@ div.bottom_block {
 }
 
 div.paper_title {
-    font-weight: 600;
-    font-size: 17px;
-    padding-bottom: 5px;
-    color: #222;
+    font-weight: 500;
+    font-size: 16px;
+    padding-bottom: 6px;
+    color: #2c3e50;
+    line-height: 1.5;
 }
 
 a.author {
@@ -164,12 +179,17 @@ a.author {
 
 div.author{
     font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+    line-height: 1.5;
 }
 
 div.paper_venue {
     font-size: 14px;
-    color: #444;
-    margin-bottom: 5px;
+    color: #666;
+    font-style: italic;
+    margin-bottom: 8px;
+    line-height: 1.5;
 }
 
 div.paper_materials{
@@ -244,30 +264,65 @@ div.tab-name, div.tab-link {
     display: flex;
     margin-bottom: 12px;
 }
+
+.experience-container {
+    padding-left: 20px;
+}
+
+.experience-item {
+    display: flex;
+    margin-bottom: 15px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.experience-date {
+    min-width: 180px;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.95em;
+}
+
+.experience-content {
+    flex: 1;
+    color: #555;
+    line-height: 1.6;
+}
+
+.patents-container {
+    padding-left: 20px;
+}
+
+.patent-item {
+    margin-bottom: 15px;
+    padding: 12px 15px;
+    background-color: #fafbfc;
+    border-radius: 4px;
+    border-left: 4px solid #5890ff;
+}
+
+.patent-title {
+    font-weight: 500;
+    color: #2c3e50;
+    font-size: 1.0em;
+    line-height: 1.5;
+}
 .paper_materials .link a {
     text-decoration: none;
-    background-color: #f4f4f4; /* 浅灰色背景 */
-    padding: 3px 8px;
-    border-radius: 4px;
-    margin-right: 5px;
-    font-size: 0.9em;
-    color: #333;
-    border: 1px solid #ddd;
+    background-color: #f8f9fa;
+    padding: 4px 10px;
+    border-radius: 3px;
+    margin-right: 6px;
+    font-size: 0.88em;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease;
 }
-.tab-button {
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    padding: 8px 14px;
-    cursor: pointer;
-    margin-right: 5px;
-}
-.tab-button.active { /* 你 JS 脚本中添加的 .active 类 */
-    background-color: #333; /* 深色背景 */
-    color: white;
-    border-color: #333;
-}
+
 .paper_materials .link a:hover {
-    background-color: #e9e9e9;
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+    color: #212529;
 }
 .paper_title {
     font-size: 1.1rem;
@@ -285,13 +340,15 @@ div.tab-name, div.tab-link {
     margin-bottom: 8px;
 }
 .news-date, .award-date {
-    flex-shrink: 0; /* 防止日期被压缩 */
-    width: 100px;   /* 固定宽度，例如 100px 或 7em */
-    font-weight: bold;
-    color: #000;
+    flex-shrink: 0;
+    min-width: 100px;
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 0.95em;
 }
 .news-content, .award-content {
-    color: #444;
+    color: #555;
+    line-height: 1.6;
 }
 .social-item {
     display: flex;
@@ -432,11 +489,17 @@ h3{
 
 .profile-info h3 {
     margin-top: 0;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    color: #2c3e50;
+    font-size: 28px;
+    font-weight: 600;
 }
 
 .profile-info p {
-    margin: 5px 0;
+    margin: 6px 0;
+    color: #555;
+    font-size: 15px;
+    line-height: 1.6;
 }
 
 .social-links {
@@ -446,4 +509,68 @@ h3{
 .profile-bio {
     clear: both;
     padding-top: 10px;
+}
+
+/* 联系方式悬浮提示样式 */
+.contact-link {
+    position: relative;
+    color: #5890ff;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 1px dashed #5890ff;
+    padding-bottom: 1px;
+}
+
+.contact-link:hover {
+    color: #3d7ae8;
+    border-bottom-color: #3d7ae8;
+}
+
+.tooltip-content {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffffff;
+    color: #333;
+    padding: 12px 16px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    white-space: nowrap;
+    z-index: 1000;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    font-weight: normal;
+    font-size: 14px;
+    border: 1px solid #e0e0e0;
+}
+
+.tooltip-content::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -6px;
+    border-width: 6px;
+    border-style: solid;
+    border-color: #ffffff transparent transparent transparent;
+}
+
+.contact-link:hover .tooltip-content {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* 微信二维码特殊样式 */
+.wechat-tooltip .tooltip-content {
+    padding: 10px;
+    white-space: normal;
+}
+
+.wechat-tooltip .tooltip-content img {
+    display: block;
+    max-width: 200px;
+    height: auto;
+    border-radius: 4px;
 }
